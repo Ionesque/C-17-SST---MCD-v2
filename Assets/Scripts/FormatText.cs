@@ -6,7 +6,7 @@ using UnityEngine.UI;
 /// <summary>
 /// Used to seperate upper and lowercase letters and renders to two seperate layers. Lowercase letters are short uppercase, eliminates need to create custom fonts
 /// </summary>
-public class FormatText : MonoBehaviour
+public class formatText : MonoBehaviour
 {
     [Header("Debugging Settings")]
     public bool testMode = false;
