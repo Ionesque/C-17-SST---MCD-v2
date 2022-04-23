@@ -14,19 +14,17 @@ public class buttonMCD : MonoBehaviour
     public Vector3 upPos;
     public Vector3 downPos;
 
-    public int nextScreen = 0;
-    public int lastScreen = 0;
-
-    bool pressed = false;
-
     public AudioSource s_Click;
     public AudioSource s_Denied;
 
-
+    public Mode nextMode = Mode.MCD_Null;
+    mcdManager m;
+    
 
     // Start is called before the first frame update
     void Start()
     {
+        m = GameObject.Find("MCD Manager").GetComponent<mcdManager>();
         t = this.GetComponent<Transform>();
         upPos = t.localPosition;
         downPos = new Vector3(upPos.x, upPos.y - 0.25f, upPos.z);
@@ -37,7 +35,7 @@ public class buttonMCD : MonoBehaviour
     {
         if (pressTimer > pressDelay)
         {
-            if(nextScreen != 0)
+            if(nextMode != Mode.MCD_Null)
             {
                 highlightActive.SetActive(true);
                 highlightDisabled.SetActive(false);
@@ -55,23 +53,24 @@ public class buttonMCD : MonoBehaviour
 
     private void OnMouseDown()
     {
-        string dbgStr = "Timer:" + pressTimer + ", Next:" + nextScreen;
+        string dbgStr = "Timer:" + pressTimer + ", Next:" + nextMode;
         Debug.Log(dbgStr);
 
-        if (nextScreen == 0)
+        if (nextMode == Mode.MCD_Null)
         {
             s_Denied.Play();
             
         }
         else if(pressTimer > pressDelay)
         {
-            // Call next screen from MCD object
+            m.mcdCurrentMode = nextMode;        // When MCD Manager has it's value changed it will trigger a page change
             s_Click.Play();
         }
-        
+        // Induce button delay, certain touchscreens had issues registering double touches     
         highlightActive.SetActive(false);
         highlightDisabled.SetActive(true);
         t.localPosition = downPos;
         pressTimer = 0.0f;
     }
+
 }
