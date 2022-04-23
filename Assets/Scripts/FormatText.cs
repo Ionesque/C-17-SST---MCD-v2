@@ -15,11 +15,13 @@ public class formatText : MonoBehaviour
     [Header("Render Elements")]
     public TextMesh r_LayerUpper;
     public TextMesh r_LayerLower;
+    public TextMesh r_LayerFill;
 
-    
+    public bool inverted = false;
+
     const int maxStringSize = 512;                    // Display character array sizes
 
-    
+
 
     // Update is called once per frame
     void Update()
@@ -62,42 +64,46 @@ public class formatText : MonoBehaviour
     {
         r_LayerUpper.color = new Color32(0, 255, 0, (byte)brt);
     }
-    
+
     /// <summary>
     /// Reads a string input applies needed conversions, and renders to attached TextMeshes     
     /// </summary>
     /// <param name="s">Input string</param>
     public void Text(string s)
     {
-        
+
         if (s.Length > maxStringSize) return;       // If for some reason the string is longer than the character array abort
 
         char[] charUpper = new char[maxStringSize];
         char[] charLower = new char[maxStringSize];
-        
-        charUpper = s.ToCharArray();
-        
+        char[] charFill = new char[maxStringSize];
 
-        for(int i = 0; i < charUpper.Length; i++)       // Checking for lowercase letters in uppercase array
+        charUpper = s.ToCharArray();
+
+
+        for (int i = 0; i < charUpper.Length; i++)       // Checking for lowercase letters in uppercase array
         {
-            if(charUpper[i] >= 97 && charUpper[i]<= 122)    // Check for lowercase letter
+            if (inverted)
             {
-                charLower[i] = (char)(charUpper[i] - 32);   // Convert from lower to uppercase and place in lowercase array
-                charUpper[i] = (char)32;                    // Remove letter from uppercase array
+                if (charUpper[i] >= 33 && charUpper[i] <= 126) charFill[i] = (char)87;
+                else if (charUpper[i] == 10) charFill[i] = (char)10;    // Newline check
+                else charFill[i] = (char)32;                            // Fills with "W" for best coverage. 
             }
-            else if (charUpper[i] == 10)                    // Check for new line and transfer to lowercase character array
+
+            if (charUpper[i] >= 97 && charUpper[i] <= 122)                // Check for lowercase letter
             {
-                charLower[i] = (char)10;
+                charLower[i] = (char)(charUpper[i] - 32);               // Convert from lower to uppercase and place in lowercase array
+                charUpper[i] = (char)32;                                // Remove letter from uppercase array
             }
-            else
-            {
-                charLower[i] = (char)32;                    // Remove letter from uppercase array
-            }
+            else if (charUpper[i] == 10) charLower[i] = (char)10;       // Newline check
+            else charLower[i] = (char)32;                               // Remove letter from uppercase array
 
         }
 
         r_LayerUpper.text = new string(charUpper);
         r_LayerLower.text = new string(charLower);
+        if (inverted) r_LayerFill.text = new string(charFill);
         Debug.Log("Done Updating");
     }
 }
+    
