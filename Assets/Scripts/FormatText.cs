@@ -67,7 +67,7 @@ public class formatText : MonoBehaviour
     /// Reads a string input applies needed conversions, and renders to attached TextMeshes     
     /// </summary>
     /// <param name="s">Input string</param>
-    void Text(string s)
+    public void Text(string s)
     {
         
         if (s.Length > maxStringSize) return;       // If for some reason the string is longer than the character array abort
@@ -89,10 +89,15 @@ public class formatText : MonoBehaviour
             {
                 charLower[i] = (char)10;
             }
+            else
+            {
+                charLower[i] = (char)32;                    // Remove letter from uppercase array
+            }
 
         }
 
         r_LayerUpper.text = new string(charUpper);
         r_LayerLower.text = new string(charLower);
+        Debug.Log("Done Updating");
     }
 }
