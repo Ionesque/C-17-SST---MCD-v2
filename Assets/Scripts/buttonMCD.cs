@@ -7,6 +7,8 @@ public class buttonMCD : MonoBehaviour
     public float pressDelay = 0.5f;
     public float pressTimer = 0.5f;
 
+    systemManager SystemManager;
+
     public GameObject highlightActive;
     public GameObject highlightDisabled;
 
@@ -28,6 +30,7 @@ public class buttonMCD : MonoBehaviour
         t = this.GetComponent<Transform>();
         upPos = t.localPosition;
         downPos = new Vector3(upPos.x, upPos.y - 0.25f, upPos.z);
+        SystemManager = GameObject.Find("Fault Settings").GetComponent<systemManager>();
     }
 
     // Update is called once per frame
@@ -59,18 +62,19 @@ public class buttonMCD : MonoBehaviour
         if (nextMode == Mode.MCD_Null)
         {
             s_Denied.Play();
-            
+            SystemManager.notSimulated();
         }
         else if(pressTimer > pressDelay)
         {
             m.mcdCurrentMode = nextMode;        // When MCD Manager has it's value changed it will trigger a page change
             s_Click.Play();
+            pressTimer = 0.0f;
         }
         // Induce button delay, certain touchscreens had issues registering double touches     
         highlightActive.SetActive(false);
         highlightDisabled.SetActive(true);
         t.localPosition = downPos;
-        pressTimer = 0.0f;
+        
     }
 
 }
