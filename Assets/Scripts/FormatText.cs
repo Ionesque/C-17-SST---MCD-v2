@@ -103,7 +103,6 @@ public class formatText : MonoBehaviour
         r_LayerUpper.text = new string(charUpper);
         r_LayerLower.text = new string(charLower);
         if (inverted) r_LayerFill.text = new string(charFill);
-        Debug.Log("Done Updating");
     }
 }
     
