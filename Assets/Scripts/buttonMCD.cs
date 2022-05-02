@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class buttonMCD : MonoBehaviour
 {
-    public float pressDelay = 0.5f;
-    public float pressTimer = 0.5f;
+    const float pressDelay = 0.15f;
+    public float pressTimer = pressDelay;
 
     systemManager SystemManager;
 
@@ -56,6 +56,7 @@ public class buttonMCD : MonoBehaviour
 
     private void OnMouseDown()
     {
+        if (m.failShown) return;
         string dbgStr = "Timer:" + pressTimer + ", Next:" + nextMode;
         Debug.Log(dbgStr);
 
