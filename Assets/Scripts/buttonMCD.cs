@@ -57,8 +57,8 @@ public class buttonMCD : MonoBehaviour
     private void OnMouseDown()
     {
         if (m.failShown) return;
-        string dbgStr = "Timer:" + pressTimer + ", Next:" + nextMode;
-        Debug.Log(dbgStr);
+        //string dbgStr = "Timer:" + pressTimer + ", Next:" + nextMode;
+        //Debug.Log(dbgStr);
 
         if (nextMode == Mode.MCD_Null)
         {
