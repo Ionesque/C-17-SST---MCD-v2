@@ -74,30 +74,46 @@ public class formatText : MonoBehaviour
 
         if (s.Length > maxStringSize) return;       // If for some reason the string is longer than the character array abort
 
+        char[] charOriginal = new char[maxStringSize];
         char[] charUpper = new char[maxStringSize];
         char[] charLower = new char[maxStringSize];
         char[] charFill = new char[maxStringSize];
 
-        charUpper = s.ToCharArray();
+        charOriginal = s.ToCharArray();
+        int correctedPos = 0;
 
 
-        for (int i = 0; i < charUpper.Length; i++)       // Checking for lowercase letters in uppercase array
+        for (int i = 0; i < charOriginal.Length; i++)       // Checking for lowercase letters in uppercase array
         {
+            if(charOriginal[i] == 64)       // This accepts @ as an escape character for lower case
+            {
+                i++;                                                // Escape found skip to next index in array
+                charLower[correctedPos] = charOriginal[i];
+                charUpper[correctedPos] = (char)32;                 // No matter what charUpper needs to be initialized with a blank at all spots.
+            }
+            else
+            {
+                charUpper[correctedPos] = charOriginal[i];
+            }
+            
             if (inverted)
             {
-                if (charUpper[i] >= 33 && charUpper[i] <= 126) charFill[i] = (char)87;
-                else if (charUpper[i] == 10) charFill[i] = (char)10;    // Newline check
-                else charFill[i] = (char)32;                            // Fills with "W" for best coverage. 
+                if (charUpper[correctedPos] >= 33 && charUpper[correctedPos] <= 126) charFill[correctedPos] = (char)87;
+                else if (charUpper[correctedPos] == 10) charFill[correctedPos] = (char)10;    // Newline check
+                else charFill[correctedPos] = (char)32;                            // Fills with "W" for best coverage. 
             }
 
-            if (charUpper[i] >= 97 && charUpper[i] <= 122)                // Check for lowercase letter
+
+            if (charUpper[correctedPos] >= 97 && charUpper[correctedPos] <= 122)                // Check for lowercase letter
             {
-                charLower[i] = (char)(charUpper[i] - 32);               // Convert from lower to uppercase and place in lowercase array
-                charUpper[i] = (char)32;                                // Remove letter from uppercase array
+                charLower[correctedPos] = (char)(charUpper[correctedPos] - 32);               // Convert from lower to uppercase and place in lowercase array
+                charUpper[correctedPos] = (char)32;                                // Remove letter from uppercase array
             }
-            else if (charUpper[i] == 10) charLower[i] = (char)10;       // Newline check
-            else charLower[i] = (char)32;                               // Remove letter from uppercase array
-
+            else if (charLower[correctedPos] >= 33 && charLower[correctedPos] <= 63) charUpper[correctedPos] = (char)32;        // if an escape character is used 
+            else if (charUpper[correctedPos] == 10) charLower[correctedPos] = (char)10;       // Newline check
+            else charLower[correctedPos] = (char)32;                               // Remove letter from uppercase array
+            
+            correctedPos++;
         }
 
         r_LayerUpper.text = new string(charUpper);
