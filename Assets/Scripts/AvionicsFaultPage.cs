@@ -13,6 +13,7 @@ public class AvionicsFaultPage : MonoBehaviour {
 
     public GameObject MCD_Manager_Object;
     mcdManager MCD_Manager_Access;
+    mcdManagerDemo MCD_Manager_Access_Demo;
 
     public bool isReady = false;
     public int totalFaults = 0;
@@ -20,17 +21,34 @@ public class AvionicsFaultPage : MonoBehaviour {
 
     public string[] faults = new string[60];            //This will store all fault string data, we shouldn't ever see more than 48 anyways. Increasing this absurd values will impact performance negatively.
 
+    bool demoVersion = false;
 
     // Use this for initialization
     void Start () {
-        MCD_Manager_Access = MCD_Manager_Object.GetComponent<mcdManager>();
+        try
+        {
+            MCD_Manager_Access = GameObject.Find("MCD Manager").GetComponent<mcdManager>();
+        }
+        catch
+        {
+            demoVersion = true;
+            MCD_Manager_Access_Demo = GameObject.Find("MCD Manager Demo").GetComponent<mcdManagerDemo>();
+
+        }
     }
 	
     
 
 	// Update is called once per frame
 	void Update () {
-        if (MCD_Manager_Access.MCD_Is_Ready == false) return;           // Wait for MCD Manager to finish initialization
+        if (demoVersion)
+        {
+            if (MCD_Manager_Access_Demo.MCD_Is_Ready == false) return;           // Wait for MCD Manager to finish initialization
+        }
+        else
+        {
+            if (MCD_Manager_Access.MCD_Is_Ready == false) return;           // Wait for MCD Manager to finish initialization
+        }
 
         if (isReady == false)
         {

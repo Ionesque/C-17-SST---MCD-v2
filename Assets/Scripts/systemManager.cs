@@ -42,10 +42,22 @@ public class systemManager : MonoBehaviour {
     public bool stat_datalink = false;          // Nuisance message in the status display, occurs if Aero-I & HF is offline
 
     mcdManager m;
+    mcdManagerDemo m_d;
+
+    bool demoVersion = false;
 
     void Start()
     {
-        m = GameObject.Find("MCD Manager").GetComponent<mcdManager>();
+        try
+        {
+            m = GameObject.Find("MCD Manager").GetComponent<mcdManager>();
+        }
+        catch
+        {
+            demoVersion = true;
+            m_d = GameObject.Find("MCD Manager Demo").GetComponent<mcdManagerDemo>();
+
+        }
     }
 
         /// <summary>
@@ -56,7 +68,15 @@ public class systemManager : MonoBehaviour {
         if (timer_NotSim > timer_NotSim_Delay)
         {
             stat_NotSim = false;
-            m.MCD_ForceRedraw = true;
+            if(demoVersion)
+            {
+                m_d.MCD_ForceRedraw = true;
+            }
+            else
+            {
+                m.MCD_ForceRedraw = true;
+            }
+            
             return;
         }
 
@@ -149,6 +169,14 @@ public class systemManager : MonoBehaviour {
     {
         timer_NotSim = 0.0f;
         stat_NotSim = true;
-        m.MCD_ForceRedraw = true;
+        if(demoVersion)
+        {
+            m_d.MCD_ForceRedraw = true;
+        }
+        else
+        {
+            m.MCD_ForceRedraw = true;
+        }
+        
     }
 }
