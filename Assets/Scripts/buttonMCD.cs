@@ -11,6 +11,7 @@ public class buttonMCD : MonoBehaviour
 
     public GameObject highlightActive;
     public GameObject highlightDisabled;
+    BrightnessKnob brightnessKnob;
 
     Transform t;
     public Vector3 upPos;
@@ -18,14 +19,16 @@ public class buttonMCD : MonoBehaviour
 
     public AudioSource s_Click;
     public AudioSource s_Denied;
-
-    public Mode nextMode = Mode.MCD_Null;
+    
+    public int nextMode = 0;
+    
     mcdManager m;
     
 
     // Start is called before the first frame update
     void Start()
     {
+        brightnessKnob = GameObject.Find("Brightness Knob").GetComponent<BrightnessKnob>();
         m = GameObject.Find("MCD Manager").GetComponent<mcdManager>();
         t = this.GetComponent<Transform>();
         upPos = t.localPosition;
@@ -38,7 +41,7 @@ public class buttonMCD : MonoBehaviour
     {
         if (pressTimer > pressDelay)
         {
-            if(nextMode != Mode.MCD_Null)
+            if(nextMode != 0)
             {
                 highlightActive.SetActive(true);
                 highlightDisabled.SetActive(false);
@@ -57,17 +60,16 @@ public class buttonMCD : MonoBehaviour
     private void OnMouseDown()
     {
         if (m.failShown) return;
-        //string dbgStr = "Timer:" + pressTimer + ", Next:" + nextMode;
-        //Debug.Log(dbgStr);
+        if (brightnessKnob.currentDisplayMode == displayMode.Off) return;
 
-        if (nextMode == Mode.MCD_Null)
+        if (nextMode == 0)
         {
             s_Denied.Play();
             SystemManager.notSimulated();
         }
         else if(pressTimer > pressDelay)
         {
-            m.mcdCurrentMode = nextMode;        // When MCD Manager has it's value changed it will trigger a page change
+            m.setMode(nextMode);        // When MCD Manager has it's value changed it will trigger a page change
             s_Click.Play();
             pressTimer = 0.0f;
         }
